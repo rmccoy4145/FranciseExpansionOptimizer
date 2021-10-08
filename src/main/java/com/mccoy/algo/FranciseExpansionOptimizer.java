@@ -18,7 +18,7 @@ public class FranciseExpansionOptimizer {
         {0,0,0,0,0,0,0,0}
     };
     
-      public static int MAX_DISTANCE = 3;
+      public static int MAX_DISTANCE = 4;
     
     /**
      * Traverse matrix to retrieve all valid build locations

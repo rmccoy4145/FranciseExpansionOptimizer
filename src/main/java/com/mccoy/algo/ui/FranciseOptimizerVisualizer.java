@@ -160,7 +160,7 @@ public class FranciseOptimizerVisualizer {
     
     private void complete() {
         this.state = State.DONE;
-        uiContainer.add(new UIHeader(375, 375, 50, 50, true, "Complete! " + numberOfValidPlots + " Found!"));
+        uiContainer.add(new UIHeader(25, 375, 50, 50, true, "Complete! " + numberOfValidPlots + " Found!\nMax Distance: " + FranciseExpansionOptimizer.MAX_DISTANCE));
     }
     
 }
