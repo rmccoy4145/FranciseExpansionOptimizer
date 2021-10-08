@@ -9,17 +9,16 @@ import java.util.Set;
  * @author ryanm
  */
 public class FranciseExpansionOptimizer {
-    public static void main(String[] args) {
-       
-    int[][] matrix = new int[][]{
-        {0,0,0,0},
-        {0,0,1,0},
-        {1,0,0,1}
+      public static int[][] MATRIX = new int[][]{
+        {0,0,0,0,0,0,0,0},
+        {0,0,0,0,0,0,0,0},
+        {0,0,0,1,1,0,0,0},
+        {0,0,0,0,0,0,1,0},
+        {0,0,1,0,1,0,0,0},
+        {0,0,0,0,0,0,0,0}
     };
-
-    System.out.println(calculateNumberOfValidBuildLocations(2, matrix, getHouseLocations(matrix)));
     
-    }
+      public static int MAX_DISTANCE = 3;
     
     /**
      * Traverse matrix to retrieve all valid build locations
@@ -35,6 +34,7 @@ public class FranciseExpansionOptimizer {
                 Point plot = new Point(row, col);
                 if(!houseLocations.contains(plot)) {
                     if(isValidBuildLocation(plot, maxDistance, matrix, houseLocations)) {
+                        System.out.println(plot);
                         numOfValidPlots++;
                     }
                 }
