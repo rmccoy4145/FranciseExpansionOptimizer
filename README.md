@@ -1,5 +1,6 @@
 # FranciseExpansionOptimizer
 Algorithm for finding the number of valid plot points a franchise can build from a maximum distance from all house points within a given matrix.
+Visualization was added to show the algorithm at work!
 
 #Approach
 
