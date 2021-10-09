@@ -1,5 +1,5 @@
 
-package com.mccoy.algo;
+package com.mccoy.algo.utils;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -8,6 +8,7 @@ import java.util.Set;
  * Find number of valid plot points a franchise can build from a maximum distance from all house point within a given matrix
  * @author ryanm
  */
+@Deprecated
 public class FranciseExpansionOptimizer {
       public static int[][] MATRIX = new int[][]{
         {0,0,0,0,0,0,0,0},

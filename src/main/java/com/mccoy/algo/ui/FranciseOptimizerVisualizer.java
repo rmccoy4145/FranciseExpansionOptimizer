@@ -5,8 +5,8 @@
  */
 package com.mccoy.algo.ui;
 
-import com.mccoy.algo.FranciseExpansionOptimizer;
-import com.mccoy.algo.FranciseExpansionOptimizer.Point;
+import com.mccoy.algo.data.Point;
+import com.mccoy.algo.data.NeighborhoodData;
 import com.mccoy.algo.ui.common.AbstractUIObject;
 import java.awt.Color;
 import java.util.HashMap;
@@ -15,26 +15,29 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- *
+ * Find number of valid plot points a franchise can build from a maximum distance from all house point within a given matrix
  * @author ryanm
  */
 public class FranciseOptimizerVisualizer {
     
-    private static int PLOT_SPACING = 50;
-    private static int PLOT_CENTER_ADJUST = 50;
+    private static final int PLOT_SPACING = 50;
+    private static final int PLOT_CENTER_ADJUST = 50;
     private final UIContainer uiContainer;
-    private Map<Point, AbstractUIObject> uiObjectsMap = new HashMap<>();
-    private FranciseExpansionOptimizer foe;
+    private final Map<Point, AbstractUIObject> uiObjectsMap = new HashMap<>();
     private int plotColIterator = 0;
     private int plotRowIterator = 0;
+    private int outwardSearchIterator = 1;
+    private final int[][] matrixInQuestion = NeighborhoodData.MATRIX;
+    private final int maxDistance = NeighborhoodData.MAX_DISTANCE;
+    
     private State state = State.START;
     
     private int numberOfValidPlots = 0;
     
     Set<Point> houseLocations = new HashSet<>();
+    Set<Point> searchedMemo = new HashSet<>();
     
-    public FranciseOptimizerVisualizer(FranciseExpansionOptimizer foe, UIContainer uiContainer) {
-        this.foe = foe;
+    public FranciseOptimizerVisualizer(UIContainer uiContainer) {
         this.uiContainer = uiContainer;
     }
     
@@ -49,7 +52,7 @@ public class FranciseOptimizerVisualizer {
                 getNextPlot();
                 break;
             case FIND_OPT_PLOTS:
-                findOptimalPlots();
+                    findOptimalPlotsBySearchAroundHouses();
                 break;    
             case COMPLETE:
                 complete();
@@ -61,7 +64,7 @@ public class FranciseOptimizerVisualizer {
     }
     
     private void getNextPlot() {
-        int[][] matrix = FranciseExpansionOptimizer.MATRIX;
+        int[][] matrix = matrixInQuestion;
         if(plotRowIterator >= matrix.length) {
             this.state = State.FIND_OPT_PLOTS;
             this.plotColIterator = 0;
@@ -90,41 +93,49 @@ public class FranciseOptimizerVisualizer {
             this. plotColIterator++;
         }     
     }
-
-    private void findOptimalPlots() {
-        int[][] matrix = FranciseExpansionOptimizer.MATRIX;
-        int maxDistance = FranciseExpansionOptimizer.MAX_DISTANCE;
-        if(plotRowIterator >= matrix.length) {
+ 
+        private void findOptimalPlotsBySearchAroundHouses() {
+        int maxDistance = this.maxDistance;
+        if(outwardSearchIterator > maxDistance) {
             this.state = State.COMPLETE;
             return;
         }
+        
+        houseLocations.stream().forEach((house) -> {
+            //check left
+            checkPoint(house.getRow(), house.getCol() - outwardSearchIterator, maxDistance);
+            //check right
+            checkPoint(house.getRow(), house.getCol() + outwardSearchIterator, maxDistance);
+            //check down
+            checkPoint(house.getRow() + outwardSearchIterator, house.getCol(), maxDistance);
+            //check up
+            checkPoint(house.getRow() - outwardSearchIterator, house.getCol(), maxDistance);
+        });
+        
+        outwardSearchIterator++;    
+    }
 
-        int col = plotColIterator;
-        int row = plotRowIterator;
-        if(col < matrix[0].length && row < matrix.length) {
-            Point maybeHouse = new Point(row, col);
-            var plot = (Plot) uiContainer.getUIObject(uiObjectsMap.get(maybeHouse));
-            if(!houseLocations.contains(maybeHouse)) {
-                plot.setColor(Color.CYAN);
-                if(isValidBuildLocation(maybeHouse, maxDistance)) {                   
+    private void checkPoint(int row, int col, int maxDistance) {
+        int[][] matrix = matrixInQuestion;
+        if(col >= 0 && col < matrix.length && row >= 0 && row < matrix.length) {
+            Point point = new Point(row, col);
+            if(!houseLocations.contains(point) && !searchedMemo.contains(point)) {
+                var plot = (Plot) uiContainer.getUIObject(uiObjectsMap.get(point));
+                plot.setColor(Color.ORANGE);
+                if(isValidBuildLocation(point, maxDistance)) {
                     plot.setColor(Color.GREEN);
-                    System.out.println(maybeHouse);
                     numberOfValidPlots++;
+                    System.out.println(point);
                 }
             }
+            searchedMemo.add(point);
         }
-        if(col >= matrix[0].length) {
-            this.plotColIterator = 0;
-            this.plotRowIterator++;
-        } else {
-            this. plotColIterator++;
-        }     
     }
     
 
     
     private void generatePlots(int increment) { 
-        int[][] matrix = FranciseExpansionOptimizer.MATRIX;
+        int[][] matrix = matrixInQuestion;
         for(int col = 0;col < matrix[0].length;col++) {
             for(int row = 0;row < matrix.length;row++){
                 Point maybeHouse = new Point(row, col);
@@ -160,7 +171,7 @@ public class FranciseOptimizerVisualizer {
     
     private void complete() {
         this.state = State.DONE;
-        uiContainer.add(new UIHeader(25, 375, 50, 50, true, "Complete! " + numberOfValidPlots + " Found!\nMax Distance: " + FranciseExpansionOptimizer.MAX_DISTANCE));
+        uiContainer.add(new UIHeader(25, 375, 50, 50, true, String.format("Complete! %d Plots Found within a Max Distance of %d", numberOfValidPlots, this.maxDistance)));
     }
     
 }

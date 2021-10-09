@@ -1,17 +1,16 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package com.mccoy.algo;
 
-import com.mccoy.algo.ui.FranciseOptimizerVisualizer;
+
 import com.mccoy.algo.ui.UIContainer;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.image.BufferStrategy;
+import static java.lang.Thread.sleep;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JFrame;
 
 /**
@@ -71,8 +70,8 @@ public class App extends Canvas implements Runnable {
         long lastTime = System.nanoTime();
         
         //Frame per second
-        double amountOfTicks = 20.0;
-        
+        double amountOfTicks = 10.0;
+
         double ns = 1000000000 / amountOfTicks;
         double delta = 0;
         long timer = System.currentTimeMillis();
