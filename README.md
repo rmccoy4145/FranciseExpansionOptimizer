@@ -21,4 +21,6 @@ Visualization was added using AWT to show the algorithm at work!
 ---------
 ```
 
+**See it go to Work!**
+
 ![Showcase](https://github.com/rmccoy4145/rmccoy4145/blob/ac70b128376e932bc8f1b1bcdc3d59fcf1d982ec/images/FranchiseOptimizerShowcase.gif?raw=true)
